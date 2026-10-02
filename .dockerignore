@@ -1,0 +1,10 @@
+.git
+node_modules
+.next
+out
+graphify-out
+.graphify-cache
+test-results
+playwright-report
+
+.env*

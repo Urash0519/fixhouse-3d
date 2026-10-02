@@ -1,32 +1,27 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProblemTutorial } from "@/components/ProblemTutorial";
-import { ComingSoon } from "@/components/ComingSoon";
 import { problems } from "@/src/data/problems";
-import { toiletRunningWaterTutorial } from "@/src/data/toilet-running-water";
-
-const tutorialMap = {
-  [toiletRunningWaterTutorial.id]: toiletRunningWaterTutorial,
-};
-
-export async function generateStaticParams() {
+import { tutorials } from "@/src/data/tutorials";
+export const dynamicParams = false;
+type Props = { params: Promise<{ slug: string }> };
+export function generateStaticParams() {
   return problems.map((problem) => ({ slug: problem.id }));
 }
-
-export default function ProblemPage({ params }: { params: { slug: string } }) {
-  const problem = problems.find((item) => item.id === params.slug);
-
-  if (!problem) {
-    return notFound();
-  }
-
-  if (!problem.available) {
-    return <ComingSoon title={problem.title} />;
-  }
-
-  const tutorial = tutorialMap[problem.id];
-  if (!tutorial) {
-    return <ComingSoon title={problem.title} />;
-  }
-
-  return <ProblemTutorial problem={problem} tutorial={tutorial} />;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const problem = problems.find((p) => p.id === slug);
+  return {
+    title: problem?.title || "找不到教學",
+    description: problem?.description,
+  };
+}
+export default async function ProblemPage({ params }: Props) {
+  const { slug } = await params;
+  const problem = problems.find((p) => p.id === slug);
+  const tutorial = tutorials[slug];
+  if (!problem || !tutorial) notFound();
+  return (
+    <ProblemTutorial key={problem.id} problem={problem} tutorial={tutorial} />
+  );
 }

@@ -1,42 +1,28 @@
-import { ProblemCard } from "@/components/ProblemCard";
-import { problems } from "@/src/data/problems";
-
-const waterProblems = problems.filter((item) => item.category === "water");
-const electricalProblems = problems.filter((item) => item.category === "electrical");
-
+import type { Metadata } from "next";
+import { ProblemCatalog } from "@/components/ProblemCatalog";
+export const metadata: Metadata = { title: "所有互動教學" };
 export default function ProblemListPage() {
   return (
-    <section className="section-stack">
-      <header className="panel-section">
-        <h1>問題列表</h1>
-        <p>第一版先提供 10 個問題，完整教學僅開放「馬桶一直流水」。</p>
+    <>
+      <header className="page-intro">
+        <p className="eyebrow">THE EVERYDAY FIX LIBRARY</p>
+        <h1>
+          每個小問題，
+          <br />
+          <em>都有看得懂的線索。</em>
+        </h1>
+        <p>
+          10 個常見居家問題，從運作原理到安全檢查。
+          <br />
+          選一個你正好需要的，或從好奇開始。
+        </p>
+        <div className="intro-tags">
+          <span>7 個水類教學</span>
+          <span>3 個用電教學</span>
+          <span>所有內容自由探索</span>
+        </div>
       </header>
-
-      <section className="problem-section">
-        <h2>水類問題</h2>
-        <div className="problem-grid">
-          {waterProblems.map((problem, index) => (
-            <ProblemCard
-              key={problem.id}
-              problem={problem}
-              styleIndex={index}
-            />
-          ))}
-        </div>
-      </section>
-
-      <section className="problem-section">
-        <h2>電類問題</h2>
-        <div className="problem-grid">
-          {electricalProblems.map((problem, index) => (
-            <ProblemCard
-              key={problem.id}
-              problem={problem}
-              styleIndex={index}
-            />
-          ))}
-        </div>
-      </section>
-    </section>
+      <ProblemCatalog />
+    </>
   );
 }

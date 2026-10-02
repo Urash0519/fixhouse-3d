@@ -1,57 +1,79 @@
 export type ProblemCategory = "water" | "electrical";
-
+export type Device =
+  | "toilet"
+  | "faucet"
+  | "sink"
+  | "shower"
+  | "pipe"
+  | "water-heater"
+  | "outlet"
+  | "breaker"
+  | "light";
+export type PartId =
+  | "body"
+  | "lid"
+  | "fill"
+  | "float"
+  | "seal"
+  | "valve"
+  | "drain"
+  | "cartridge"
+  | "spout"
+  | "joint"
+  | "head"
+  | "hose"
+  | "supply"
+  | "control"
+  | "heater"
+  | "socket"
+  | "switch"
+  | "bulb";
+export type Point3 = [number, number, number];
 export interface Problem {
   id: string;
   title: string;
   category: ProblemCategory;
-  device: string;
-  available: boolean;
+  device: Device;
+  description: string;
+  duration: string;
+  risk: "basic" | "observe";
+  keywords: string[];
 }
-
-export interface TutorialStep {
-  id: string;
+export interface Chapter {
   title: string;
   description: string;
-  targetPart: string;
+  part: PartId;
 }
-
-export interface ToiletRunningWaterTutorial {
-  id: string;
+export interface QuestionNode {
+  kind: "question";
   title: string;
   description: string;
-  riskLevel: "low" | "medium" | "high";
-  causes: string[];
-  steps: TutorialStep[];
-  safetyTips: string[];
-}
-
-export type TutorialMode = "info" | "question" | "result";
-
-export type TutorialStateKey =
-  | "open-tank"
-  | "ask-flow"
-  | "ask-flapper"
-  | "result-flapper"
-  | "ask-float"
-  | "check-fill-valve"
-  | "result-float"
-  | "result-fill-valve"
-  | "completed";
-
-export interface TutorialNode {
-  key: TutorialStateKey;
-  mode: TutorialMode;
-  title: string;
-  description: string;
-  targetPart: string;
-  question?: string;
-  ctaLabel?: string;
+  part: PartId;
+  question: string;
+  yes: string;
+  no: string;
   yesLabel?: string;
   noLabel?: string;
-  yesNext?: TutorialStateKey;
-  noNext?: TutorialStateKey;
-  continueNext?: TutorialStateKey;
-  causes?: string[];
-  recommendation?: string;
 }
-
+export interface ResultNode {
+  kind: "result";
+  title: string;
+  description: string;
+  part: PartId;
+  severity: "notice" | "professional" | "danger";
+  actions: string[];
+}
+export type FlowNode = QuestionNode | ResultNode;
+export interface Tutorial {
+  id: string;
+  principle: string;
+  chapters: [Chapter, Chapter, Chapter];
+  safety: string[];
+  start: string;
+  nodes: Record<string, FlowNode>;
+  sources: { title: string; url: string }[];
+}
+export interface Answer {
+  node: string;
+  value: "yes" | "no" | "unsure";
+}

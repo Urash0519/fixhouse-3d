@@ -1,0 +1,29 @@
+services:
+  app:
+    build: .
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - .:/app
+      - dependencies:/app/node_modules
+      - next-cache:/app/.next
+    environment:
+      NEXT_TELEMETRY_DISABLED: "1"
+      NEXT_PUBLIC_BASE_PATH: ${NEXT_PUBLIC_BASE_PATH:-}
+    init: true
+  browser-tests:
+    image: mcr.microsoft.com/playwright:v1.63.0-noble
+    profiles: ["test"]
+    working_dir: /app
+    volumes:
+      - .:/app
+      - test-dependencies:/app/node_modules
+    environment:
+      CI: "1"
+      NEXT_PUBLIC_BASE_PATH: ${NEXT_PUBLIC_BASE_PATH:-/fixhouse-3d}
+    command: sh -c "npm ci --no-fund --no-audit && npm run test:e2e"
+    init: true
+volumes:
+  dependencies:
+  next-cache:
+  test-dependencies:
